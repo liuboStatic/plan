@@ -31,16 +31,16 @@ public class LoginController {
     @RequestMapping("/login")
     public JsonResult login(HttpServletRequest request, String account, String password) {
         if (account == null || password == null || account.isEmpty() || password.isEmpty()){
-            return new JsonResult(500,"参数无效");
+            return new JsonResult(501,"参数无效");
         }
         QueryWrapper<User> wrapper = new QueryWrapper<User>();
         wrapper.eq("account",account);
         User user = userService.getOne(wrapper);
         if (user == null){
-            return new JsonResult(500,"账户不存在");
+            return new JsonResult(502,"账户不存在");
         }
         if (user.getPassword() == null || !password.equals(user.getPassword())){
-            return new JsonResult(500,"密码错误");
+            return new JsonResult(503,"密码错误");
         }
         HttpSession session = request.getSession();
         session.setAttribute("user",user);

@@ -7,7 +7,11 @@
     <link rel="stylesheet" href="bootstrap-3.4.1-dist/css/bootstrap.min.css">
     <script src="bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
-
+    <style type="text/css">
+        body {
+            margin: 50px;
+        }
+    </style>
 </head>
 <body>
     <div style="text-align: center">
@@ -26,21 +30,66 @@
                 <td>Bangalore</td>
                 <td>560001</td>
             </tr>
-            <tr>
-                <td>Sachin</td>
-                <td>Mumbai</td>
-                <td>400003</td>
-            </tr>
-            <tr>
-                <td>Uma</td>
-                <td>Pune</td>
-                <td>411027</td>
-            </tr>
             </tbody>
         </table>
-        <button type="button" class="btn btn-success">爱我</button>
-<!--        <img src="/test.jpg">-->
-        <button type="button" class="btn btn-danger">更爱我</button>
     </div>
+    <ul class="pagination">
+        <li><a href="#">&laquo;</a></li>
+        <li class="active"><a href="#">1</a></li>
+        <li class="disabled"><a href="#">2</a></li>
+        <li><a href="#">3</a></li>
+        <li><a href="#">4</a></li>
+        <li><a href="#">5</a></li>
+        <li><a href="#">&raquo;</a></li>
+    </ul>
 </body>
+
+<script>
+    $(function () {
+        $('#check').click(function () {
+            $.ajax({
+                url:"/plan/findByPage",
+                type:"get",
+                data:{},
+                success:function (data) {
+                    //循环list中的list
+                    var Temp = ''//先定义一个变量为空
+                    $.each(data, function (i, item) {//对第一层list进行循环
+                        Temp += "<h4> " + item.scClass + " " + item.scBzr + "</h4>\n" +//拿到第一层循环的对象值,循环放入Temp变量中,下面直到循环结束前都是固定内容
+                            "        <ol>\n" +
+                            "            <table class=\"table table-bordered\">\n" +
+                            "                <thead>\n" +
+                            "                <tr>\n" +
+                            "                    <th>姓名</th>\n" +
+                            "                    <th>学号</th>\n" +
+                            "                    <th>性别</th>\n" +
+                            "                    <th>年龄</th>\n" +
+                            "                </tr>\n" +
+                            "                </thead>\n" +
+                            "                <tbody>\n"
+
+                        $.each(item.userList, function (i, item) {//进行list中包含的list循环
+
+                            Temp += "                <tr>\n" +//拿到第二层循环对象的值以及固定html代码循环放入Temp变量中
+                                "                    <td>" + item.stuName + "</td>\n" +//拿到list中的list的对象值,进行赋值
+                                "                    <td>\" + item.num + \"</td>\n" +
+                                "                    <td>\" + item.sex + \"</td>\n" +
+                                "                    <td>\" + item.age + \"</td>\n" +
+                                "                </tr>\n"
+                        })
+
+                        Temp += "                </tbody>\n" +
+                            "            </table>\n" +
+                            "        </ol>"
+                    });
+
+                    $("#search").append(Temp)//在id为search的后面加入上面设置好的代码
+
+                    console.log(data);
+                },
+                error:function (e) {
+                    alert("错误！！");
+                }
+            });
+</script>
 </html>
