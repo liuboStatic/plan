@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加计划</title>
+
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <link href="bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="bootstrap-datetimepicker-master/js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+    <style>
+        .col-md-5 {
+            width: auto;
+        }
+        body {
+            margin: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <form role="form">
+        <div class="form-group">
+            <label for="planInfo">计划内容</label>
+            <textarea id="planInfo" class="form-control" rows="5"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="planEndTime">预计完成时间</label>
+            <div class="input-group date form_datetime col-md-5" data-date-format="yyyy-mm-dd hh:ii:00" data-link-field="dtp_input1">
+                <input class="form-control" size="16" id="planEndTime" type="text" value="" readonly>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+            </div>
+            <input type="hidden"  value="" /><br/>
+        </div>
+        <button type="button" class="btn btn-primary btn-lg btn-block" id="submit">提交</button>
+    </form>
+
+</body>
+
+<script type="text/javascript">
+    $('.form_datetime').datetimepicker({
+        language:  'zh-CN',
+        Format:'Custom',
+        FormatCustomFormat:'yyyy-mm-dd hh:ii:ss',
+        weekStart: 1,
+        todayBtn:  1,
+        autoclose: true,
+        todayHighlight: 1,
+        startView: 2,
+        forceParse: 0,
+        showMeridian: 1
+    });
+    $(function () {
+        $("#submit").click(function () {
+            $.ajax({
+                url:"/plan/save",
+                type: "get",
+                data: {"planInfo":$("#planInfo").val(),"planEndTime":$("#planEndTime").val()},
+                dataType:"json",
+                success:function (data) {
+                    if(data.state == "200"){
+                        window.location.href = "index.html";
+                    }if (data.state==400){
+                        alert("登录失效，请重新登录");
+                        window.location.href="login.html";
+                    }else {
+                        alert(data.message);
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+</html>

@@ -1,5 +1,6 @@
 package com.test.demo.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +36,7 @@ public class PlanController {
     @RequestMapping("/save")
     public JsonResult save(HttpServletRequest request, Plan plan) {
         logger.info("计划添加参数：{}",plan);
-        if (plan == null){
+        if (plan == null || plan.getPlanInfo() == null || plan.getPlanEndTime() == null){
             return new JsonResult(500,"参数无效");
         }
         User user = this.getSessionUser(request);
@@ -90,6 +91,23 @@ public class PlanController {
         result.setPlanEndTime(plan.getPlanEndTime());
 
         planService.updateById(result);
+        return new JsonResult(200,"操作成功");
+    }
+
+    @RequestMapping("/deleteById")
+    public JsonResult updateById(HttpServletRequest request, Integer id) {
+        if (id == null){
+            return new JsonResult(500,"参数无效");
+        }
+        User user = this.getSessionUser(request);
+        if (user == null){
+            return new JsonResult(400,"登录过期");
+        }
+        boolean result = planService.removeById(id);
+        if(!result){
+            return new JsonResult(500,"删除数据失败");
+        }
+
         return new JsonResult(200,"操作成功");
     }
 

@@ -17,6 +17,6 @@ import com.test.demo.entity.Plan;
 @Repository
 public interface PlanMapper extends BaseMapper<Plan> {
 
-    @Select("SELECT * FROM `tb_plan` where create_user = #{id}")
+    @Select("SELECT * FROM `tb_plan` where create_user = #{id} order by plan_end_time DESC")
     IPage<Plan> findByPage(IPage iPage,@Param("id") Integer id);
 }
