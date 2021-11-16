@@ -8,22 +8,49 @@
     <script src="bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
     <style>
+        html{
+            height: 100%;
+        }
         body {
+            width: 100%;
             margin: 50px;
+            background: url("login.jpg") no-repeat;
+            background-size:100% 100%;
+        }
+        .row{
+            align-content: center;
         }
     </style>
 </head>
 <body>
-
-    <div class="form-group">
-        <label for="name">账号</label>
-        <input type="text" class="form-control" id="name" placeholder="请输入账号">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-8 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label for="name">账号</label>
+                    <input type="text" class="form-control" id="name" placeholder="请输入账号">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 col-md-8 col-lg-8">
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" class="form-control" id="password" placeholder="请输入密码">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 col-md-8 col-lg-8">
+                <button type="submit" class="btn btn-default" id="submit">登录</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8 col-md-8 col-lg-8">
+                <button type="submit" class="btn btn-default" id="register">注册</button>
+            </div>
+        </div>
     </div>
-    <div class="form-group">
-        <label for="password">密码</label>
-        <input type="text" class="form-control" id="password" placeholder="请输入密码">
-    </div>
-    <button type="submit" class="btn btn-default" id="submit">登录</button>
 </body>
 
 <script type="text/javascript">
@@ -47,6 +74,10 @@
                     }
                 }
             });
+        });
+
+        $("#register").click(function () {
+            window.location.href = "register.html";
         });
     });
 </script>

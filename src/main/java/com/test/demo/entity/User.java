@@ -23,6 +23,7 @@ public class User {
 
     public String phone;
 
+    public String ip;
 
     public Integer getId() {
         return id;
@@ -64,6 +65,14 @@ public class User {
         this.phone = phone;
     }
 
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -72,6 +81,7 @@ public class User {
                 ", account='" + account + '\'' +
                 ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
+                ", ip='" + ip + '\'' +
                 '}';
     }
 }

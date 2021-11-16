@@ -1,19 +1,30 @@
 package com.test.demo.controller;
 
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.nio.charset.Charset;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.catalina.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.alibaba.fastjson.JSONException;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.test.demo.entity.JsonResult;
 import com.test.demo.entity.User;
 import com.test.demo.service.UserService;
+import com.test.demo.util.AddressUtils;
 
 /**
  * 登录控制器
@@ -42,6 +53,9 @@ public class LoginController {
         if (user.getPassword() == null || !password.equals(user.getPassword())){
             return new JsonResult(503,"密码错误");
         }
+        String ipAddr = AddressUtils.getIpAddress(request);
+        user.setIp(ipAddr);
+        userService.updateById(user);
         HttpSession session = request.getSession();
         session.setAttribute("user",user);
         return new JsonResult(200,"操作成功");
@@ -53,4 +67,12 @@ public class LoginController {
         session.removeAttribute("user");
         return new JsonResult(200,"操作成功");
     }
+
+
+    public static void main(String[] args) {
+        Long a = 100L;
+        a = a + null;
+
+    }
+
 }
