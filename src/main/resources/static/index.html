@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>计划</title>
+
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <script src="bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+
+    <style type="text/css">
+        body {
+            margin: 50px;
+        }
+        .infoTd{
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            max-width: 60px;
+        }
+    </style>
+</head>
+<body>
+    <button type="button" class="btn btn-primary btn-lg btn-block" onclick="toAdd()">添加计划</button>
+    <table class="table table-striped">
+        <caption>计划清单</caption>
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>内容</th>
+                <th>预计完成时间</th>
+                <th>查看详情</th>
+                <th>是否完成</th>
+                <th>删除</th>
+            </tr>
+        </thead>
+        <tbody id="route">
+
+        </tbody>
+    </table>
+    <span class="glyphicon glyphicon-align-left" style="color: rgb(228, 48, 60);">总页数：</span>
+    <span id="totalPage" style="color: rgb(80,228,122);"></span>
+    <span class="glyphicon glyphicon-align-left" style="color: rgb(228, 48, 60);">总条数：</span>
+    <span id="totalCount" style="color: rgb(80,228,122);"></span>
+    <div style="text-align: center">
+        <ul class="pagination" id="pageNum">
+        </ul>
+    </div>
+</body>
+
+<script type="text/javascript">
+    function load(current,size){
+        $.get("plan/findByPage",{current:current,size:size},function (result) {
+            if (result.state==400){
+                alert("登录失效，请重新登录");
+                window.location.href="login.html";
+            }
+            $("#totalPage").html(result.data.current);
+            $("#totalCount").html(result.data.total);
+            var lis="";
+            var first="";
+            var pre="";
+            var beforeNum=result.data.current-1;
+            if(beforeNum<=0){
+                beforeNum=1
+                first = ' <li class="disabled" οnclick="javascript:load(' + beforeNum + ',10)"><a href="javascript:load(1,10)">首页</a></li>';
+                pre = '<li class="disabled" οnclick="javascript:load(' + beforeNum + ',10)"><a href="javascript:load(' + beforeNum + ',10)">&laquo;</a></li>';
+            }else {
+                first = ' <li οnclick="javascript:load(' + beforeNum + ',10)"><a href="javascript:load(1,10)">首页</a></li>';
+                pre = '<li οnclick="javascript:load(' + beforeNum + ',10)"><a href="javascript:load(' + beforeNum + ',10)">&laquo;</a></li>';
+            }
+            lis+=first;
+            lis+=pre;
+            var begin;
+            var end;
+            //要显示10个页码
+            if(result.data.pages<10){
+                //如果总页码都没有10页，就显示全部
+                begin=1;
+                end=result.data.pages;
+            }else{
+                //总页码超过10页
+                begin=result.data.pages-5;
+                end=result.data.pages+4;
+                //如果前边不够5个，后边补齐10个
+                if(begin<1){
+                    begin=1;
+                    end=begin+9;
+                }
+                //如果后边不足4个，前面补齐10个
+                if(end>result.data.pages){
+                    end=result.data.pages;
+                    begin=end-9;
+                }
+            }
+            for(var i=begin;i<=end;i++){
+                var li;
+                //判断当前页码是否等于i
+                //创建不同格式的页码li
+                if(result.data.current==i){
+                    li=' <li class="active" οnclick="javascript:load('+i+',10)"><a href="javascript:load('+i+',10)">'+i+'</a></li>';
+                }else{
+                    li=' <li οnclick="javascript:load('+i+',10)"><a href="javascript:load('+i+',10)">'+i+'</a></li>';
+                }
+                lis+=li;
+            }
+            var next="";
+            var last="";
+            var nextPage=result.data.current+1;
+            if(nextPage>result.data.pages){
+                nextPage=result.data.pages;
+                next=' <li class="disabled" οnclick="javascript:load('+nextPage+',10)"><a href="javascript:load('+nextPage+',10)">&raquo;</a></li>';
+                last=' <li class="disabled" οnclick="javascript:load('+nextPage+',10)"><a href="javascript:load('+nextPage+',10)">末页</a></li>';
+            }else {
+                next = ' <li οnclick="javascript:load(' + nextPage + ',10)"><a href="javascript:load(' + nextPage + ',10)">&raquo;</a></li>';
+                last = ' <li οnclick="javascript:load(' + nextPage + ',10)"><a href="javascript:load(' + nextPage + ',10)">末页</a></li>';
+            }
+            lis+=next;
+            lis+=last;
+            $("#pageNum").html(lis);
+            //列表数据展示
+            var route_lis="";
+            for(var i=0;i<result.data.records.length;i++){
+                var route= result.data.records[i];
+                var li;
+                //未完成
+                if (route.isEnd==0){
+                    li='<tr>\n' +
+                        '       <td class="infoTd">'+route.id+'</td>\n' +
+                        '       <td class="infoTd">'+route.planInfo+'</td>\n' +
+                        '       <td class="infoTd">'+route.planEndTime+'</td>\n' +
+                        '       <td class="infoTd"><button type="button" class="btn btn-info" onclick="infoPlan(\''+route.planInfo+'\')">详情</button></td>\n' +
+                        '       <td class="infoTd"><button type="button" class="btn btn-success" onclick="endPlan('+route.id+')">完成</button></td>\n' +
+                        '       <td class="infoTd"><button type="button" class="btn btn-danger" onclick="deletePlan('+route.id+')">删除</button></td>\n' +
+                        '   </tr>';
+                }else {
+                    li='<tr>\n' +
+                        '       <td class="infoTd">'+route.id+'</td>\n' +
+                        '       <td class="infoTd">'+route.planInfo+'</td>\n' +
+                        '       <td class="infoTd">'+route.planEndTime+'</td>\n' +
+                        '       <td class="infoTd"><button type="button" class="btn btn-info" onclick="infoPlan(\''+route.planInfo+'\')">详情</button></td>\n' +
+                        '       <td class="infoTd"><button type="button" class="btn btn-default disabled">已完成</button></td>\n' +
+                        '       <td class="infoTd"><button type="button" class="btn btn-danger" onclick="deletePlan('+route.id+')">删除</button></td>\n' +
+                        '   </tr>';
+                }
+                route_lis+=li;
+            }
+            $("#route").html(route_lis);
+            //定位到页面顶部
+            window.scrollTo(0,0);
+        })
+    }
+    function endPlan(id){
+        $.get("plan/updateById",{id:id,isEnd:1},function (result) {
+            if (result.state==400){
+                alert("登录失效，请重新登录");
+                window.location.href="login.html";
+            }else if(result.state==500){
+                alert(result.message);
+            }
+            location.reload();
+        })
+    };
+    function deletePlan(id){
+        $.get("plan/deleteById",{id:id,isEnd:1},function (result) {
+            if (result.state==400){
+                alert("登录失效，请重新登录");
+                window.location.href="login.html";
+            }else if(result.state==500){
+                alert(result.message);
+            }
+            location.reload();
+        })
+    };
+    function toAdd(){
+        window.location.href="add.html";
+    };
+    function infoPlan(planInfo){
+        alert(planInfo);
+    };
+
+    window.load(1,10);
+</script>
+</html>
