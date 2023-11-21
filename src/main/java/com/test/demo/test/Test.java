@@ -1,30 +1,74 @@
 package com.test.demo.test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class Test {
 
+//    public static void main(String[] args) {
+//        try {
+//            String command = "dir";
+//            // 构建ProcessBuilder对象
+//            ProcessBuilder processBuilder = new ProcessBuilder();
+//            // 设置Linux命令
+////            processBuilder.command("bash", "-c", command);
+//            processBuilder.command("cmd","/C", command);
+//            // 开始执行命令
+//            Process process = processBuilder.start();
+//            // 读取Linux命令执行的结果
+//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//            StringBuilder stringBuilder = new StringBuilder();
+//            String line;
+//            while ((line = bufferedReader.readLine()) != null) {
+//                stringBuilder.append(line).append("\n");
+//            }
+//            // 关闭流
+//            bufferedReader.close();
+//            // 返回Linux命令执行的结果
+//            System.out.println(stringBuilder.toString());
+//        }catch (Exception e){
+//            e.printStackTrace();
+//        }
+//    }
+
+//    public static void main(String[] args) {
+//        String convert = convert("}\\n{");
+//        System.out.println(convert);
+//    }
+
     public static void main(String[] args) {
-        Usera usera = new Usera();
-        usera.usera1();
+        if (true == false){
+            // Test Method Escape
+            // \u000d\u007d\u000d\u007b\u000d
+            System.out.println("哈哈");
+        }
     }
 
-    private  <E extends Comparable<? super E>> E max(List<? extends E> e1) {
-        if (e1 == null){
-            return null;
+    public static String convert(String str)
+    {
+        str = (str == null ? "" : str);
+        String tmp;
+        StringBuffer sb = new StringBuffer(1000);
+        char c;
+        int i, j;
+        sb.setLength(0);
+        for (i = 0; i < str.length(); i++)
+        {
+            c = str.charAt(i);
+            sb.append("\\u");
+            j = (c >>>8); //取出高8位
+            tmp = Integer.toHexString(j);
+            if (tmp.length() == 1)
+                sb.append("0");
+            sb.append(tmp);
+            j = (c & 0xFF); //取出低8位
+            tmp = Integer.toHexString(j);
+            if (tmp.length() == 1)
+                sb.append("0");
+            sb.append(tmp);
+
         }
-        //迭代器返回的元素属于 E 的某个子类型
-        Iterator<? extends E> iterator = e1.iterator();
-        E result = iterator.next();
-        while (iterator.hasNext()){
-            E next = iterator.next();
-            if (next.compareTo(result) > 0){
-                result = next;
-            }
-        }
-        return result;
+        return (new String(sb));
     }
 
 }

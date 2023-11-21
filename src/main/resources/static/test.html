@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+
+    <link rel="stylesheet" href="bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+    <style>
+        html{
+            height: 100%;
+        }
+        body {
+            width: 100%;
+            margin: 50px;
+            background-size:100% 100%;
+        }
+    </style>
+</head>
+<body id="body">
+    <button type="submit" class="btn btn-default" id="submit">掉</button>
+</body>
+
+<script type="text/javascript">
+    $(function () {
+        $("#submit").click(function () {
+            $.ajax({
+                url:"/v1/test",
+                type: "post",
+                data: {},
+                dataType:"json",
+                function (data) {
+                    alert(data,'sssssssssss')
+                    // console.log(data,'sssssssssss')
+
+                    // if(data.state == "200"){
+                    //     // var obj = window.open("about:blank");
+                    //     // obj.document.write(data);
+                    // }else {
+                    //     alert("失败")
+                    // }
+                }
+            });
+        });
+
+    });
+</script>
+
+</html>
